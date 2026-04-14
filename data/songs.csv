@@ -9,3 +9,11 @@ id,title,artist,genre,mood,energy,tempo_bpm,valence,danceability,acousticness
 8,Night Drive Loop,Neon Echo,synthwave,moody,0.75,110,0.49,0.73,0.22
 9,Focus Flow,LoRoom,lofi,focused,0.40,80,0.59,0.60,0.78
 10,Rooftop Lights,Indigo Parade,indie pop,happy,0.76,124,0.81,0.82,0.35
+11,Block Party Anthem,Concrete Verse,hip-hop,energetic,0.87,96,0.73,0.91,0.08
+12,Porch Swing Evenings,Dusty Hollow,country,relaxed,0.33,88,0.78,0.48,0.83
+13,Adagio for Quiet Rooms,Lumina String Quartet,classical,calm,0.18,52,0.62,0.22,0.97
+14,Ironclad,Shatter Volt,metal,intense,0.96,178,0.31,0.58,0.04
+15,Slow Burn,Velour Soul,r&b,romantic,0.55,82,0.76,0.67,0.44
+16,Mountain Trail Song,Cedar & Moss,folk,melancholic,0.29,68,0.44,0.38,0.91
+17,Festival Drop,ULTRAWAV,edm,euphoric,0.95,128,0.88,0.94,0.03
+18,Rainy Monday Blues,Hattie Vale,blues,sad,0.31,74,0.27,0.35,0.88

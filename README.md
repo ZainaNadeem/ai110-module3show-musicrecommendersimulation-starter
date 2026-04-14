@@ -4,31 +4,49 @@
 
 In this project you will build and explain a small music recommender system.
 
-Your goal is to:
-
-- Represent songs and a user "taste profile" as data
-- Design a scoring rule that turns that data into recommendations
-- Evaluate what your system gets right and wrong
-- Reflect on how this mirrors real world AI recommenders
-
-Replace this paragraph with your own summary of what your version does.
+This project builds a simple music recommender system that suggests songs based on a user's preferred "vibe." It uses a content-based filtering approach, meaning it compares song features like genre, mood, energy, and tempo to a user’s preferences. Each song is scored based on how similar it is to the user’s taste, and the highest scoring songs are recommended. This simulation helps demonstrate how real-world platforms personalize music recommendations.
 
 ---
 
 ## How The System Works
 
-Explain your design in plain language.
+This system uses a content-based recommendation approach to suggest songs.
 
-Some prompts to answer:
+Each song in `data/songs.csv` has these features:
+- **Genre** — musical category (pop, lofi, rock, hip-hop, etc.)
+- **Mood** — emotional tone (happy, chill, intense, relaxed, melancholic, etc.)
+- **Energy** — intensity level on a 0.0–1.0 scale
+- **Tempo (BPM)** — beats per minute
+- **Valence** — positivity on a 0.0–1.0 scale
+- **Danceability** — rhythmic suitability on a 0.0–1.0 scale
+- **Acousticness** — acoustic vs. electronic on a 0.0–1.0 scale
 
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
+### Algorithm Recipe
 
-You can include a simple diagram or bullet list if helpful.
+Each song receives a score calculated as follows:
 
+| Criterion | Points |
+|---|---|
+| Genre matches user preference | +2.0 |
+| Mood matches user preference | +1.0 |
+| Energy similarity: `1.0 - abs(song_energy - user_energy)` | 0.0 – 1.0 |
+| **Maximum possible score** | **4.0** |
+
+Songs are then ranked from highest to lowest score; the top K are returned as recommendations.
+
+**Potential bias:** Genre is weighted twice as heavily as mood, so two songs that match the mood but differ in genre will score differently even if they feel similar. A metal song and a pop song both tagged "intense" are not interchangeable to this system.
+
+### Data Flow
+
+```mermaid
+flowchart TD
+    A[User Preferences\ngenre · mood · energy] --> B[load_songs\nRead songs.csv]
+    B --> C{For each song in catalog}
+    C --> D[score_song\n+2.0 genre match\n+1.0 mood match\n+energy similarity]
+    D --> E[Collect scored songs]
+    E --> F[Sort by score descending]
+    F --> G[Return Top K\nwith reasons]
+```
 ---
 
 ## Getting Started
@@ -68,11 +86,10 @@ You can add more tests in `tests/test_recommender.py`.
 
 ## Experiments You Tried
 
-Use this section to document the experiments you ran. For example:
-
-- What happened when you changed the weight on genre from 2.0 to 0.5
-- What happened when you added tempo or valence to the score
-- How did your system behave for different types of users
+- Increasing the weight of genre made the recommendations more consistent in style but less diverse.
+- Lowering the genre weight allowed more variety but sometimes produced less relevant results.
+- Adding valence improved recommendations for mood-based users (e.g., happy vs sad).
+- Including tempo helped differentiate between calm and fast-paced songs.
 
 ---
 
@@ -80,13 +97,10 @@ Use this section to document the experiments you ran. For example:
 
 Summarize some limitations of your recommender.
 
-Examples:
-
-- It only works on a tiny catalog
-- It does not understand lyrics or language
-- It might over favor one genre or mood
-
-You will go deeper on this in your model card.
+- The system only uses a small dataset, so recommendations are limited.
+- It does not consider lyrics, artist popularity, or listening context.
+- It may over-prioritize certain features like genre and ignore others.
+- All users are treated similarly, even though real preferences are more complex.
 
 ---
 
@@ -98,8 +112,9 @@ Read and complete `model_card.md`:
 
 Write 1 to 2 paragraphs here about what you learned:
 
-- about how recommenders turn data into predictions
-- about where bias or unfairness could show up in systems like this
+This project helped me understand how recommender systems turn user preferences into numerical scores to make predictions. I learned that even simple rules can produce useful recommendations, but they also have limitations.
+
+It also showed me how bias can appear in systems like this. For example, if the dataset is limited or certain features are weighted too heavily, the system may favor certain types of music and ignore others. This reflects real-world challenges in building fair and balanced recommendation systems.
 
 
 ---

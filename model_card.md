@@ -6,9 +6,15 @@
 
 ---
 
-## 2. Intended Use
+## 2. Goal / Task
 
-VibeFinder suggests up to five songs from a small catalog based on three user-supplied preferences: favorite genre, favorite mood, and a target energy level (0.0–1.0). It is designed for classroom exploration of content-based filtering — not for production use. It assumes the user can be described by a single, static taste profile and that their entire preference can be captured in three numbers.
+VibeFinder suggests up to five songs from a small catalog based on three user-supplied preferences: favorite genre, favorite mood, and a target energy level (0.0–1.0). The goal is to demonstrate how content-based filtering works — matching a user's stated preferences against measurable features of each song and ranking the results by similarity score.
+
+### Intended Use
+This system is designed for classroom exploration only. It is meant to help students understand how a recommender system scores, ranks, and explains results. It works best as a learning tool when you want to see how changing a single weight or preference shifts the output.
+
+### Non-Intended Use
+This system should **not** be used to make real music recommendations for real users. It has no access to listening history, it cannot personalize over time, it treats every user the same way, and its 18-song catalog is too small to produce meaningful variety. It should not be used in any context where recommendations affect a person's experience of a product or platform. It also should not be used to draw conclusions about what genres or moods "belong together" — the associations it makes are based only on manually assigned labels, not any analysis of the actual audio.
 
 ---
 
@@ -133,8 +139,14 @@ Block Party Anthem [hip-hop]       Score: 1.94
 
 ## 9. Personal Reflection
 
-The most surprising moment was seeing Coffee Shop Stories rank first for someone who asked for high-energy euphoric jazz. Logically the algorithm did exactly what it was told — genre is worth the most, so the only jazz song won. But intuitively it felt completely wrong. That gap between "the math is correct" and "the result is useful" is the core tension in any recommendation system.
+### Biggest learning moment
+The most surprising moment was seeing **Coffee Shop Stories** rank first for a user who asked for high-energy euphoric jazz. The algorithm did exactly what it was told — genre is worth 2 points, so the only jazz song won. But the result felt completely wrong. That gap between "the math is correct" and "the result is useful" is something I hadn't expected to feel so clearly from such a small program. It made the abstract idea of algorithmic bias concrete: bias doesn't require bad intentions, just a weight that favors one feature too strongly over others.
 
-Building this simulation also made me think differently about how Spotify or Apple Music might work. These apps feel like they "understand" your taste, but under the hood they are doing some version of the same thing: turning songs into numbers, comparing those numbers to your profile, and ranking the results. The question is always which numbers to pick and how much to weight each one. Getting those weights wrong — even slightly — can result in a system that technically follows its rules but frustrates every user who falls outside the expected pattern.
+### How AI tools helped — and where I had to verify
+Using AI assistance to generate the initial scoring logic and boilerplate was genuinely faster than writing it from scratch. The suggestions for the energy-similarity formula (`1.0 - abs(song_energy - user_energy)`) and the `sorted()` pattern were accurate and idiomatic. Where I had to slow down and double-check was the **weight values themselves** — the AI suggested plausible-sounding numbers, but I had to actually run the adversarial profile to discover that a genre weight of 2.0 would dominate the entire scoring system in a bad way. The code was correct; the design decision buried in it was not. That is a pattern worth remembering: AI tools are good at structure and syntax, but only running the system on real inputs reveals whether the logic actually does what you intended.
 
-Human judgment still matters most when defining what "good" means. The algorithm can optimize for a score, but someone has to decide what that score measures and whether it reflects what users actually want. In this project I had to make that decision for genre, mood, and energy; a real product team would need user research, A/B tests, and ongoing feedback to get it right.
+### What surprised me about simple algorithms "feeling" like recommendations
+I expected a three-rule scoring function to feel obviously mechanical and easy to see through. What surprised me is how much it *doesn't* feel that way when the top result matches your intuition. When the Chill Lofi profile returned Library Rain with a perfect 4.0, it felt satisfying — like the system understood the user. That feeling was an illusion produced by three integer comparisons and one subtraction. It made me understand why users trust recommendation systems even when those systems are doing something quite simple under the hood. The system doesn't need to be complex to feel smart; it just needs to be right often enough that you stop questioning it.
+
+### What I would try next
+If I kept developing this, the first thing I would change is replacing the binary genre-match (either 2 points or 0) with a **genre similarity table** — so that "metal" and "rock" are treated as closer neighbors than "metal" and "lofi." The second thing would be adding **valence** to the scoring formula, because positivity/negativity is independent of energy and catches cases like "calm but sad" versus "calm but happy." Both changes would make the system more nuanced without adding significant complexity.

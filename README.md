@@ -161,15 +161,15 @@ Summarize some limitations of your recommender.
 
 ## Reflection
 
-Read and complete `model_card.md`:
+Full model card: [model_card.md](model_card.md)
 
-[**Model Card**](model_card.md)
+**Biggest learning moment:** Seeing a slow, relaxed jazz café track rank first for a user who asked for high-energy euphoric jazz. The algorithm followed its rules perfectly — genre was worth the most points, so the only jazz song won. The code was correct; the result was wrong. That gap between "the math checks out" and "the output is actually useful" is something I hadn't expected to feel so clearly from such a small program. It made algorithmic bias tangible rather than theoretical.
 
-Write 1 to 2 paragraphs here about what you learned:
+**On using AI tools:** AI assistance accelerated the boilerplate — the CSV loading, the `sorted()` pattern, the energy-similarity formula. But it couldn't tell me whether my *design decisions* were good. The adversarial profile test (which I had to run myself) was what revealed that a genre weight of 2.0 would dominate every scenario where genre and energy conflicted. AI tools are strong on structure and syntax; only running the system on real inputs shows whether the logic does what you actually intended.
 
-This project helped me understand how recommender systems turn user preferences into numerical scores to make predictions. I learned that even simple rules can produce useful recommendations, but they also have limitations.
+**What surprised me about simple algorithms feeling like recommendations:** I expected three scoring rules to feel obviously mechanical. What surprised me is how convincing it felt when the top result matched intuition — Library Rain scoring a perfect 4.0 for the Chill Lofi profile felt like the system *understood* the user. That feeling was produced by one dictionary lookup, one string comparison, and one subtraction. It helped me understand why people trust recommendation systems without questioning them: the system doesn't need to be complex to feel smart, it just needs to be right often enough.
 
-It also showed me how bias can appear in systems like this. For example, if the dataset is limited or certain features are weighted too heavily, the system may favor certain types of music and ignore others. This reflects real-world challenges in building fair and balanced recommendation systems.
+**What I'd try next:** Replace binary genre matching (2 points or 0) with a genre-similarity table so metal and rock are treated as closer neighbors than metal and lofi. Also add valence to the scoring formula — it captures positive vs. negative emotional tone independently of energy, which would fix the "calm but sad vs. calm but happy" blind spot the current system has.
 
 
 ---

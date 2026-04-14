@@ -86,10 +86,65 @@ You can add more tests in `tests/test_recommender.py`.
 
 ## Experiments You Tried
 
-- Increasing the weight of genre made the recommendations more consistent in style but less diverse.
-- Lowering the genre weight allowed more variety but sometimes produced less relevant results.
-- Adding valence improved recommendations for mood-based users (e.g., happy vs sad).
-- Including tempo helped differentiate between calm and fast-paced songs.
+Four user profiles were stress-tested. Terminal output for each is shown below.
+
+**Profile 1 — High-Energy Pop** (`genre=pop, mood=happy, energy=0.9`)
+```
+Sunrise City [pop / happy]        Score: 3.92
+Gym Hero [pop / intense]          Score: 2.97
+Rooftop Lights [indie pop/happy]  Score: 1.86
+Storm Runner [rock / intense]     Score: 0.99
+Block Party Anthem [hip-hop]      Score: 0.97
+```
+Sunrise City is the obvious winner. Gym Hero ranked 2nd despite its "intense" mood because the genre bonus (2.0) outweighs the missing mood point (1.0). A strict "happy pop only" listener would likely skip it.
+
+---
+
+**Profile 2 — Chill Lofi** (`genre=lofi, mood=chill, energy=0.35`)
+```
+Library Rain [lofi / chill]       Score: 4.00  ← perfect score
+Midnight Coding [lofi / chill]    Score: 3.93
+Focus Flow [lofi / focused]       Score: 2.95
+Spacewalk Thoughts [ambient]      Score: 1.93
+Coffee Shop Stories [jazz]        Score: 0.98
+```
+The cleanest result. When genre coverage in the dataset is good, the scorer works exactly as intended — three lofi songs in a row, all making intuitive sense.
+
+---
+
+**Profile 3 — Deep Intense Rock** (`genre=rock, mood=intense, energy=0.95`)
+```
+Storm Runner [rock / intense]     Score: 3.96
+Ironclad [metal / intense]        Score: 1.99
+Gym Hero [pop / intense]          Score: 1.98
+Festival Drop [edm / euphoric]    Score: 1.00
+Block Party Anthem [hip-hop]      Score: 0.92
+```
+Storm Runner wins by a huge margin (only rock song in the catalog). Metal and Pop both tied at ~1.99 on mood + energy alone — the system could not separate them by genre.
+
+---
+
+**Profile 4 (Adversarial) — Jazz + Euphoric + High Energy** (`genre=jazz, mood=euphoric, energy=0.9`)
+```
+Coffee Shop Stories [jazz/relaxed]  Score: 2.47  ← genre bias
+Festival Drop [edm / euphoric]      Score: 1.95
+Storm Runner [rock / intense]       Score: 0.99
+Gym Hero [pop / intense]            Score: 0.97
+Block Party Anthem [hip-hop]        Score: 0.97
+```
+The clearest example of genre-weight bias. Coffee Shop Stories is a slow, relaxed café jazz track — the opposite of "high-energy euphoric" — yet it ranked first because its genre tag earned +2.0 points. Festival Drop, which is genuinely euphoric and high-energy, scored 0.52 points less.
+
+---
+
+**Experiment — halve genre weight, double energy weight** (adversarial profile)
+```
+Festival Drop [edm / euphoric]      Score: 2.90  ← bias corrected
+Storm Runner [rock / intense]       Score: 1.98
+Gym Hero [pop / intense]            Score: 1.94
+Coffee Shop Stories [jazz/relaxed]  Score: 1.94  ← demoted to 4th
+Block Party Anthem [hip-hop]        Score: 1.94
+```
+Reducing genre from +2.0 to +1.0 and doubling the energy contribution moved Festival Drop to first place — a much better result for this user. The downside: well-matched profiles like Chill Lofi lose some precision because genre now matters less throughout the system.
 
 ---
 
